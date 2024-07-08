@@ -22,12 +22,14 @@ export default function LandingPage() {
         <div className='w-full  h-screen fixed bg-neutral-800'>
             <div className='my-16 mx-16 grid grid-cols-2 gap-4'>
                 <div className='grid col-span-1'>
-                    Image
+                    <img src={'/chessboard.jpeg'} alt='Image of a chess board'></img>
                 </div>
                 <div className='grid col-span-1 flex justify-center'>
+                    <div className='flex flex-col justify-center'>
                     <h1 className='text-5xl text-white font-bold my-2'>Play Chess</h1>
-                    <h1 className='text-5xl text-white font-bold my-2 mx-8'>Online</h1>
-                    <button onClick={() => beginGame()} className="bg-green-500 rounded my-8 text-white p-2 text-md font-bold hover:bg-green-600">Begin</button>
+                    <h1 className='text-5xl text-white font-bold my-4 mx-8'>Online</h1>
+                    <button onClick={() => beginGame()} className="w-full bg-green-500 rounded my-8 text-white p-2 text-md font-bold hover:bg-green-600">Begin</button>
+                    </div>
                 </div>
             </div>
         </div>
