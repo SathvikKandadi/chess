@@ -7,14 +7,14 @@ function App() {
 
 
   return (
-    <>
+    <div className="h-screen bg-neutral-800">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage/>}/>
           <Route path="/game" element={<GamePage/>}/>
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 
