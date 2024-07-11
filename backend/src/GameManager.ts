@@ -28,17 +28,22 @@ export class GameManager {
             const game = new Game(this.pendingUser, user);
             this.games.push(game);
             this.pendingUser = null;
-            console.log('A new game has been created');
+            user.send(JSON.stringify({
+                type:"init_game",
+                payload:"You have sucessfully joined a game"
+            }))
         }
         else {
             this.pendingUser = user;
+            this.pendingUser.send(JSON.stringify({
+                type:"init_game",
+                payload:"Waiting for another user to join"
+            }))
         }
     }
 
     findGame(user: WebSocket) {
         const game = this.games.find((game) => game.player1 === user || game.player2 === user); // Change it based on Game Id
-        if (game) {
-            game.makeMove({from:"e4",to:"e5"});
-        }
+        return game;
     }
 }

@@ -10,10 +10,37 @@ wss.on('connection', function connection(ws) {
     gameManager.addUser(ws);
     ws.on('message', (message) => {
         const messageStr = message.toString();
+        const msg = JSON.parse(messageStr);
         console.log('Received message:', messageStr);
-        if (messageStr === 'init_game') {
-            gameManager.beginGame();
-            ws.send("The game has started");
+        if (msg.type === 'init_game') {
+            gameManager.beginGame(ws);
+        }
+        else if (msg.type === 'move') {
+            console.log("A move is being made");
+            const game = gameManager.findGame(ws);
+            if (game) {
+                game.makeMove(msg.payload);
+            }
+            else {
+                console.log("No such game found");
+            }
+        }
+        // else if (msg.type === 'update_move') {
+        //     const game = gameManager.findGame(ws);
+        //     if (game) {
+        //         game.updateMove(msg.payload);
+        //         ws.send(JSON.stringify({
+        //             type:"update_move",
+        //             payload:msg.payload
+        //         }))
+        //     }
+        //     else
+        //     {
+        //         console.log("No such game found")
+        //     }
+        // }
+        else {
+            console.log("Unvalid Message");
         }
     });
     ws.on('close', () => {

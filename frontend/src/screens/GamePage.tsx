@@ -1,28 +1,46 @@
+import { useEffect, useState } from 'react';
 import ChessBoard from '../components/ChessBoard';
+import { useSocket } from '../hooks/useSocket';
+import { Chess, Color, PieceSymbol, Square } from 'chess.js';
 
 export default function GamePage() {
-    const socket = new WebSocket("ws://localhost:8080")
+    const socket = useSocket();
+    const [game, setGame] = useState<Chess>(new Chess());
+    const [board,setBoard] = useState<({square: Square;type:PieceSymbol;color:Color; } | null)[][] >(game.board());
 
-    // Connection opened
-    socket.addEventListener("open", event => {
-        console.log("Connection established");
-        socket.send("Connection established")
-    });
+    useEffect(() => {
+        if (!socket)
+            return;
 
-    // Listen for messages
-    socket.addEventListener("message", event => {
-        console.log("Message from server ", event.data)
-    })
-  return (
-    <div className='h-screen w-screen grid grid-cols-3'>
+        socket.onmessage = (message) => {
+            const msg = JSON.parse(message.data);
+            if (msg.type === "init_game") {
+                console.log(msg.payload);
+            }
+            else if (msg.type === "update_move") {
+                console.log(msg.payload);
+                game.move(msg.payload);
+                setGame(new Chess(game.fen()));
+                setBoard(game.board());
+            }
+        }
+
+    }, [socket]);
+
+    if (!socket) return <div>Connecting...</div>
+
+    return (
+        <div className='h-screen w-screen grid grid-cols-3'>
             <div className='grid col-span-3 md:col-span-2  flex justify-center items-center'>
-                <ChessBoard />
+                <ChessBoard socket={socket} game={game} board={board} setBoard={setBoard} />
             </div>
             <div className='grid col-span-3 md:col-span-1 flex justify-center items-center'>
-                <button className="bg-green-500 text-white p-4 rounded hover:bg-green-600">
+                <button className="bg-green-500 text-white p-4 rounded hover:bg-green-600" onClick={() => socket.send(JSON.stringify({
+                    type: "init_game"
+                }))}>
                     Start
                 </button>
             </div>
         </div>
-  )
+    )
 }

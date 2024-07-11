@@ -13,13 +13,24 @@ wss.on('connection', function connection(ws) {
 
     ws.on('message', (message) => {
         const messageStr = message.toString();
+        const msg = JSON.parse(messageStr);
         console.log('Received message:', messageStr);
-        if (messageStr === 'init_game') {
+        if (msg.type === 'init_game') {
             gameManager.beginGame(ws);
-            ws.send("The game has started");
         }
-        else if (messageStr === 'move') {
-            gameManager.findGame(ws);
+        else if (msg.type === 'move') {
+            console.log("A move is being made");
+            const game=gameManager.findGame(ws);
+            if (game) {
+                game.makeMove(msg.payload);
+            }
+            else
+            {
+                console.log("No such game found")
+            }
+        }
+        else {
+            console.log("Unvalid Message");
         }
     });
 
