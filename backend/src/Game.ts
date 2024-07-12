@@ -14,14 +14,14 @@ export class Game {
         this.startTime = new Date();
 
         this.player1.send(JSON.stringify({
-            type: "init_game",
+            type: "game_started",
             payload: {
                 color: "white"
             }
         }));
 
         this.player2.send(JSON.stringify({
-            type: "init_game",
+            type: "game_started",
             payload: {
                 color: "black"
             }
@@ -29,22 +29,21 @@ export class Game {
     }
 
     makeMove(move: { from: string, to: string }) {
+        console.log("Make move function called");
         console.log(move);
-
         const result = this.board.move(move);
         if (!result) {
             console.error("Invalid Move");
             this.notifyInvalidMove();
             return;
         }
-
-        console.log("Make move function called");
-
         if (this.board.isGameOver()) {
             this.endGame();
             return;
         }
 
+        // this.broadcastGameState();
+        console.log(this.board.ascii());
         this.updatePlayers(move);
     }
 
@@ -85,6 +84,16 @@ export class Game {
             console.log('sending update to black');
             this.player2.send(updateMoveMessage);
         }
+    }
+
+    broadcastGameState() {
+        const gameState = JSON.stringify({
+            type: "update_game_state",
+            payload: this.board.fen()
+        });
+
+        this.player1.send(gameState);
+        this.player2.send(gameState);
     }
 
     getMoves() {

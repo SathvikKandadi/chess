@@ -25,20 +25,6 @@ wss.on('connection', function connection(ws) {
                 console.log("No such game found");
             }
         }
-        // else if (msg.type === 'update_move') {
-        //     const game = gameManager.findGame(ws);
-        //     if (game) {
-        //         game.updateMove(msg.payload);
-        //         ws.send(JSON.stringify({
-        //             type:"update_move",
-        //             payload:msg.payload
-        //         }))
-        //     }
-        //     else
-        //     {
-        //         console.log("No such game found")
-        //     }
-        // }
         else {
             console.log("Unvalid Message");
         }
