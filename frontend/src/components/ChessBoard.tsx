@@ -16,7 +16,6 @@ interface chessBoardProps {
 
 
 export default function ChessBoard({ socket, game, board, setBoard, color }: chessBoardProps) {
-    // const [board,setBoard] = useState<({square: Square;type:PieceSymbol;color:Color; } | null)[][] >(game.board());
     const [from, setFrom] = useState<Square | null>(null);
 
     function getSquare(i: number, j: number) {
@@ -39,7 +38,7 @@ export default function ChessBoard({ socket, game, board, setBoard, color }: che
                             row.map((square, j) => (
                                 <div
                                     key={j}
-                                    className={`${(i + j) % 2 === 0 ? 'bg-green-600' : 'bg-lime-50'} h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 flex items-center justify-center `}
+                                    className={`${(i + j) % 2 === 0 ? 'bg-green-600' : 'bg-lime-50'} ${from === square?.square ? 'border-4 border-yellow-500' : ''} h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 xl:h-24 xl:w-24 flex items-center justify-center `}
                                     onClick={() => {
 
                                         if (color.length === 0) {
@@ -76,9 +75,8 @@ export default function ChessBoard({ socket, game, board, setBoard, color }: che
                                 >
                                     <div className="flex items-center justify-center h-full">
                                         {
-                                            square ? <img src={`/${square?.color === 'b' ? `b${square.type}` : `w${square.type}`}.png`}/> : ""
+                                            square ? <img src={`/${square?.color === 'b' ? `b${square.type}` : `w${square.type}`}.png`} alt={`${square.color}${square.type}`} /> : ""
                                         }
-                                        {/* {square ? `${square.color}${square.type}` : ''} */}
                                     </div>
                                 </div>
                             ))
